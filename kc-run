@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [[ $# != 1 ]] && [[ $# != 2 ]]; then
+  echo "Expecting exactly one or two arguments"
+  exit 1
+fi
+
+EXT="${1##*.}"     # delete longest match from front
+FILENAME="${1%.*}" # delete shortest match from back
+shift
+
+kc-make "${FILENAME}.${EXT}"
+
+if [[ $? != 0 ]]; then
+  echo "Failed to kc-make"
+  exit 1
+fi
+
+./${FILENAME} < "${FILENAME}.in${1}"
