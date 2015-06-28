@@ -12,7 +12,7 @@ shift
 kc-make "${FILENAME}.${EXT}"
 
 if [[ $? != 0 ]]; then
-  echo "Failed to kc-make"
+  echo "kc-make failed"
   exit 1
 fi
 
