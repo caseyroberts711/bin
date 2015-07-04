@@ -7,6 +7,9 @@ fi
 
 EXT="${1##*.}"     # delete longest match from front
 FILENAME="${1%.*}" # delete shortest match from back
+if [[ ${EXT} = ${1} ]]; then
+  EXT=cc
+fi
 shift
 
 kc-make "${FILENAME}.${EXT}"

@@ -1,20 +1,36 @@
 #!/bin/bash
 
+if [[ $# < 1 ]]; then
+  echo "Expecting at least one argument"
+  exit 1
+fi
+
+DEBUG="-DDEBUG"
+if [[ ${1} = "-nd" ]]; then # no debug :) on by default :p
+  DEBUG=""
+  shift
+fi
+
 if [[ $# != 1 ]]; then
-  echo "Expecting exactly one argument"
+  echo "Expecting exactly one filename"
   exit 1
 fi
 
 EXT="${1##*.}"     # delete longest match from front
 FILENAME="${1%.*}" # delete shortest match from back
+if [[ ${EXT} = ${1} ]]; then
+  EXT=cc
+fi
 shift
 
 if [ ${EXT} = cc ]; then
-  clang++ -std=c++11 -stdlib=libc++ "${FILENAME}.${EXT}" -o "${FILENAME}" 2> /tmp/tmp
-  if [[ $? != 0 ]]; then
+  echo "clang++ -std=c++11 ${DEBUG} -stdlib=libc++ -O3 \"${FILENAME}.${EXT}\" -o \"${FILENAME}\" 2> /tmp/tmp"
+  clang++ -std=c++11 ${DEBUG} -stdlib=libc++ -O3 "${FILENAME}.${EXT}" -o "${FILENAME}" 2> /tmp/tmp
+  EXIT_CODE=$?
+  if [[ ${EXIT_CODE} != 0 ]]; then
     vim /tmp/tmp
   fi
-  exit $?
+  exit ${EXIT_CODE}
 else
   echo "Unknown extension '${EXT}'"
   exit 1
